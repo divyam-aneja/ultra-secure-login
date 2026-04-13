@@ -1,126 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Ultra Secure Login System v999</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
+<meta charset="UTF-8">
+<title>Ultra Secure Login System v999</title>
 
-    .box {
-      background: #1e293b;
-      padding: 25px;
-      border-radius: 15px;
-      width: 350px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    }
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
 
-    h2 {
-      text-align: center;
-    }
+.box {
+  background: rgba(30,41,59,0.95);
+  padding: 30px;
+  border-radius: 20px;
+  width: 420px;
+  box-shadow: 0 0 40px rgba(139,92,246,0.5);
+}
 
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
-    }
+h2 {
+  text-align: center;
+}
 
-    button {
-      background: #8b5cf6;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
+.tagline {
+  text-align: center;
+  font-size: 12px;
+  color: #a5b4fc;
+  margin-bottom: 20px;
+}
 
-    .output {
-      margin-top: 15px;
-      background: #334155;
-      padding: 10px;
-      border-radius: 10px;
-      white-space: pre-line;
-    }
-  </style>
+input, select, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+}
+
+button {
+  background: linear-gradient(45deg, #8b5cf6, #ec4899);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.challenge {
+  margin-top: 10px;
+  background: #334155;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.output {
+  margin-top: 20px;
+  background: #0f172a;
+  padding: 15px;
+  border-radius: 10px;
+  white-space: pre-line;
+}
+</style>
 </head>
 
 <body>
 
 <div class="box">
-  <h2>Ultra Secure Login v999</h2>
+<h2>Ultra Secure Login v999</h2>
+<div class="tagline">"We don't trust users. We test them."</div>
 
-  <input type="text" id="user" placeholder="Username">
-  <input type="password" id="pass" placeholder="Password">
+<input type="text" id="user" placeholder="Username">
+<input type="password" id="pass" placeholder="Password">
 
-  <select id="mood">
-    <option value="">Your Mood</option>
-    <option>Happy</option>
-    <option>Sad</option>
-    <option>Suspicious</option>
-    <option>Too Confident</option>
-  </select>
+<select id="zodiac">
+<option value="">Select Zodiac</option>
+<option>Aries</option>
+<option>Taurus</option>
+<option>Gemini</option>
+<option>Cancer</option>
+<option>Leo</option>
+<option>Virgo</option>
+<option>Libra</option>
+<option>Scorpio</option>
+<option>Sagittarius</option>
+<option>Capricorn</option>
+<option>Aquarius</option>
+<option>Pisces</option>
+</select>
 
-  <input type="text" id="biscuit" placeholder="Favorite biscuit (2012)">
+<button onclick="start()">INITIATE LOGIN</button>
 
-  <select id="zodiac">
-    <option value="">Zodiac Sign</option>
-    <option>Aries</option>
-    <option>Taurus</option>
-    <option>Gemini</option>
-    <option>Leo</option>
-    <option>Virgo</option>
-  </select>
+<div id="challengeBox"></div>
+<div id="output" class="output"></div>
 
-  <button onclick="login()">Log In Securely</button>
-
-  <div id="output" class="output"></div>
 </div>
 
 <script>
-async function login() {
+let challenges = [
+  "Click here to prove you are not a robot 🤨",
+  "Click again… we don’t trust the first click",
+  "Click 5 times to confirm commitment",
+  "Click slowly… suspicious speed detected",
+  "Click but emotionally",
+  "Click while thinking about your life choices",
+  "Click only if you deserve access"
+];
+
+let reasons = [
+  "You blinked too fast. Suspicious.",
+  "Your vibe is off today.",
+  "AI committee didn’t like your energy.",
+  "You seem like someone who says 'ok' in arguments.",
+  "Your zodiac sign raised concerns.",
+  "Too normal. That’s suspicious.",
+  "Too unique. That’s also suspicious.",
+  "System felt uncomfortable.",
+  "Your biscuit choice lacked personality.",
+  "We just don’t feel like letting you in."
+];
+
+function start() {
+  let challengeBox = document.getElementById("challengeBox");
   let output = document.getElementById("output");
 
-  let steps = [
-    "Checking username legitimacy...",
-    "Analyzing emotional stability...",
-    "Consulting biscuit database (2012)...",
-    "Cross-checking zodiac trust...",
-    "Sending OTP to your past self...",
-    "Running AI overthinking model...",
-    "Contacting trust committee..."
-  ];
+  output.innerText = "Initializing 47 security layers...\n";
 
-  output.innerText = "";
+  let randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
 
-  for (let step of steps) {
-    output.innerText += step + "\n";
-    await new Promise(r => setTimeout(r, 800));
-  }
+  challengeBox.innerHTML = `<div class="challenge" onclick="verify()">${randomChallenge}</div>`;
+}
 
-  let mood = document.getElementById("mood").value;
-  let zodiac = document.getElementById("zodiac").value;
-  let biscuit = document.getElementById("biscuit").value.toLowerCase();
+function verify() {
+  let output = document.getElementById("output");
+  let challengeBox = document.getElementById("challengeBox");
 
-  let result = "Login denied. You seem emotionally inconsistent.";
+  output.innerText += "Analyzing click behavior...\n";
+  output.innerText += "Checking emotional stability...\n";
+  output.innerText += "Consulting AI ethics board...\n";
+  output.innerText += "Running unnecessary algorithms...\n";
 
-  if (mood === "Too Confident") {
-    result = "Login denied. Overconfidence detected.";
-  } else if (zodiac === "Gemini") {
-    result = "Login denied. Dual personality risk.";
-  } else if (biscuit.includes("oreo")) {
-    result = "Login paused. Biscuit too mainstream.";
-  }
+  let randomReason = reasons[Math.floor(Math.random() * reasons.length)];
 
-  output.innerText += "\nFINAL RESULT:\n" + result;
+  setTimeout(() => {
+    output.innerText += "\nFINAL RESULT:\n❌ ACCESS DENIED\nReason: " + randomReason;
+    challengeBox.innerHTML = "";
+  }, 2000);
 }
 </script>
 
