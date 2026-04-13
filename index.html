@@ -1,1 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ultra Secure Login System v999</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
 
+    .box {
+      background: #1e293b;
+      padding: 25px;
+      border-radius: 15px;
+      width: 350px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+    }
+
+    button {
+      background: #8b5cf6;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .output {
+      margin-top: 15px;
+      background: #334155;
+      padding: 10px;
+      border-radius: 10px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Ultra Secure Login v999</h2>
+
+  <input type="text" id="user" placeholder="Username">
+  <input type="password" id="pass" placeholder="Password">
+
+  <select id="mood">
+    <option value="">Your Mood</option>
+    <option>Happy</option>
+    <option>Sad</option>
+    <option>Suspicious</option>
+    <option>Too Confident</option>
+  </select>
+
+  <input type="text" id="biscuit" placeholder="Favorite biscuit (2012)">
+
+  <select id="zodiac">
+    <option value="">Zodiac Sign</option>
+    <option>Aries</option>
+    <option>Taurus</option>
+    <option>Gemini</option>
+    <option>Leo</option>
+    <option>Virgo</option>
+  </select>
+
+  <button onclick="login()">Log In Securely</button>
+
+  <div id="output" class="output"></div>
+</div>
+
+<script>
+async function login() {
+  let output = document.getElementById("output");
+
+  let steps = [
+    "Checking username legitimacy...",
+    "Analyzing emotional stability...",
+    "Consulting biscuit database (2012)...",
+    "Cross-checking zodiac trust...",
+    "Sending OTP to your past self...",
+    "Running AI overthinking model...",
+    "Contacting trust committee..."
+  ];
+
+  output.innerText = "";
+
+  for (let step of steps) {
+    output.innerText += step + "\n";
+    await new Promise(r => setTimeout(r, 800));
+  }
+
+  let mood = document.getElementById("mood").value;
+  let zodiac = document.getElementById("zodiac").value;
+  let biscuit = document.getElementById("biscuit").value.toLowerCase();
+
+  let result = "Login denied. You seem emotionally inconsistent.";
+
+  if (mood === "Too Confident") {
+    result = "Login denied. Overconfidence detected.";
+  } else if (zodiac === "Gemini") {
+    result = "Login denied. Dual personality risk.";
+  } else if (biscuit.includes("oreo")) {
+    result = "Login paused. Biscuit too mainstream.";
+  }
+
+  output.innerText += "\nFINAL RESULT:\n" + result;
+}
+</script>
+
+</body>
+</html>
