@@ -3,386 +3,606 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.E.C.U.R.E. | NEURAL MAINLINE V10.4</title>
+    <title>S.E.C.U.R.E. // NEURAL HUB // v10.9</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;700&family=Space+Grotesk:wght@300;400;600;700&display=swap');
+        /* ========================================
+        TITAN CSS ENGINE v1.0
+        ========================================
+        */
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;700&family=Space+Grotesk:wght@300;400;600;700;800&display=swap');
         
-        :root { --green: #00ff9d; --red: #ff3e3e; --bg: #050507; }
-        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: #fff; overflow: hidden; height: 100vh; }
-        
-        .glass { background: rgba(12, 12, 15, 0.98); backdrop-filter: blur(20px); border: 1px solid rgba(0, 255, 157, 0.2); }
-        
-        /* Face Scan Logic */
-        .scan-frame { position: relative; width: 240px; height: 240px; border: 2px solid rgba(0, 255, 157, 0.3); border-radius: 15px; overflow: hidden; background: #000; }
-        .scan-bar { position: absolute; width: 100%; height: 3px; background: var(--green); box-shadow: 0 0 20px var(--green); top: 0; animation: scanMove 3s ease-in-out infinite; z-index: 20; }
-        @keyframes scanMove { 0%, 100% { top: 0%; } 50% { top: 100%; } }
+        :root {
+            --green: #00ff9d;
+            --red: #ff3e3e;
+            --bg: #050508;
+            --sidebar-bg: #0a0a0f;
+            --glass: rgba(15, 15, 22, 0.98);
+        }
 
-        /* Navigation Panes */
-        .pane { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; }
-        .pane.active { display: block; opacity: 1; transform: translateY(0); }
+        * {
+            box-sizing: border-box;
+            cursor: default;
+        }
 
-        /* UI Elements */
-        .btn-action { background: var(--green); color: #000; font-weight: 900; padding: 1.2rem; border-radius: 6px; width: 100%; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; }
-        .btn-action:hover { box-shadow: 0 0 30px var(--green); transform: scale(1.02); }
-        
-        .terminal-log { font-family: 'Fira Code', monospace; font-size: 11px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; transition: height 0.5s ease; }
-        
-        input, select, textarea { background: rgba(255,255,255,0.05)!important; border: 1px solid rgba(255,255,255,0.1)!important; color: var(--green)!important; padding: 14px; border-radius: 8px; width: 100%; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--green)!important; background: rgba(255,255,255,0.08)!important; }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg);
+            color: #e0e0e0;
+            font-family: 'Space Grotesk', sans-serif;
+            overflow: hidden;
+        }
 
-        /* Game Elements */
-        #reaction-dot { width: 55px; height: 55px; background: var(--green); border-radius: 50%; position: absolute; cursor: pointer; display: none; z-index: 100; border: 4px solid #fff; box-shadow: 0 0 25px var(--green); }
-        #pizza-btn { font-size: 80px; cursor: pointer; transition: transform 0.1s; user-select: none; display: inline-block; }
-        #pizza-btn:active { transform: scale(1.4) rotate(10deg); }
+        /* NEURAL PARTICLE CANVAS */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
 
-        /* Popups */
-        .popup-window { position: fixed; background: #ff3e3e; color: white; padding: 20px; border-radius: 12px; font-weight: bold; z-index: 1000; display: none; box-shadow: 0 20px 50px rgba(0,0,0,0.8); width: 300px; }
+        /* LAYOUT ARCHITECTURE */
+        .secure-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            width: 95vw;
+            height: 90vh;
+            margin: 5vh auto;
+            background: var(--glass);
+            border: 1px solid rgba(0, 255, 157, 0.15);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(25px);
+            position: relative;
+        }
 
-        /* Glitch Graphics */
-        .glitch-active { animation: glitchSkew 0.2s infinite; }
-        @keyframes glitchSkew { 0% { transform: skew(0); } 20% { transform: skew(3deg); } 40% { transform: skew(-3deg); } 100% { transform: skew(0); } }
+        /* SIDEBAR STYLING */
+        .sidebar {
+            background: var(--sidebar-bg);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* STAGE CONTAINER */
+        .stage-viewport {
+            padding: 3rem;
+            overflow-y: auto;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        .stage-viewport::-webkit-scrollbar { width: 5px; }
+        .stage-viewport::-webkit-scrollbar-thumb { background: var(--green); border-radius: 10px; }
+
+        /* ANIMATIONS */
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .glitch-text { animation: textGlitch 4s infinite; }
+        @keyframes textGlitch {
+            0% { text-shadow: none; }
+            2% { text-shadow: 2px 0 var(--red), -2px 0 var(--green); }
+            4% { text-shadow: none; }
+        }
+
+        /* INPUTS & UI */
+        .input-group label {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .custom-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            padding: 15px !important;
+            color: var(--green) !important;
+            font-family: 'Fira Code', monospace !important;
+            border-radius: 6px;
+            transition: 0.3s;
+            margin-bottom: 1.5rem;
+        }
+
+        .custom-input:focus {
+            border-color: var(--green) !important;
+            background: rgba(0, 255, 157, 0.05) !important;
+            outline: none;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.1);
+        }
+
+        .btn-glow {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--green);
+            color: black;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-radius: 4px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-glow:hover {
+            box-shadow: 0 0 35px var(--green);
+            transform: translateY(-2px);
+        }
+
+        /* SCANNER COMPONENT */
+        .scanner-box {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            border: 2px solid rgba(0, 255, 157, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            background: black;
+        }
+
+        .scan-bar {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: var(--green);
+            box-shadow: 0 0 20px var(--green);
+            top: 0;
+            animation: scanLoop 3s infinite ease-in-out;
+            z-index: 5;
+        }
+
+        @keyframes scanLoop { 0%, 100% { top: 0%; } 50% { top: 100%; } }
+
+        /* LOG FEED */
+        #log-feed {
+            font-family: 'Fira Code', monospace;
+            font-size: 10px;
+            height: 180px;
+            overflow-y: hidden;
+            color: rgba(0, 255, 157, 0.5);
+            line-height: 1.6;
+        }
+
+        /* PIZZA GAME */
+        #pizza-target {
+            font-size: 80px;
+            cursor: pointer;
+            user-select: none;
+            transition: 0.1s;
+            display: inline-block;
+        }
+        #pizza-target:active { transform: scale(1.4) rotate(15deg); }
+
+        /* REFLEX TARGET */
+        #reflex-dot {
+            width: 50px;
+            height: 50px;
+            background: var(--green);
+            border-radius: 50%;
+            position: absolute;
+            cursor: pointer;
+            box-shadow: 0 0 30px var(--green);
+            display: none;
+            border: 4px solid white;
+            z-index: 50;
+        }
+
+        /* POPUPS */
+        .alert-popup {
+            position: fixed;
+            background: var(--red);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            z-index: 1000;
+            font-weight: 800;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            display: none;
+            width: 280px;
+        }
+
+        .pane { display: none; }
+        .pane.active { display: block; }
 
     </style>
 </head>
-<body class="flex items-center justify-center p-6">
+<body>
 
-    <div id="p-alert-1" class="popup-window" style="top: 15%; right: 10%;">
-        <div class="flex justify-between"><span>SECURITY ALERT</span><button onclick="closeP('p-alert-1')">X</button></div>
-        <p class="text-xs mt-2 font-normal">UNAUTHORIZED HUMOR DETECTED IN SECTOR 7G.</p>
+    <canvas id="particle-canvas"></canvas>
+
+    <div id="alert-1" class="alert-popup" style="top: 10%; right: 10%;">
+        <div class="flex justify-between items-center mb-2">
+            <span>CORE ERROR</span>
+            <button onclick="closeAlert('alert-1')" class="opacity-50 hover:opacity-100">CLOSE</button>
+        </div>
+        <p class="text-[10px] font-normal uppercase">Unauthorized biscuit levels detected in cache.</p>
     </div>
 
-    <div class="glass w-full max-w-6xl h-[90vh] rounded-3xl grid grid-cols-1 lg:grid-cols-[340px_1fr] overflow-hidden shadow-2xl">
+    <div class="secure-container">
         
-        <aside class="bg-black/40 border-r border-white/5 p-8 flex flex-col gap-8">
-            <div>
+        <aside class="sidebar">
+            <div class="mb-12">
                 <div class="flex items-center gap-2 mb-2">
-                    <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
-                    <span class="text-[10px] font-bold tracking-[0.4em] text-emerald-500 uppercase">Uplink: Active</span>
+                    <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10b981]"></span>
+                    <span class="text-[10px] font-bold tracking-[0.4em] text-emerald-500 uppercase">SkillVora Link</span>
                 </div>
-                <h1 class="text-3xl font-black italic tracking-tighter uppercase leading-none">S.E.C.U.R.E. <br><span class="text-emerald-500 text-sm tracking-widest">Neural Mainline</span></h1>
+                <h1 class="text-4xl font-black tracking-tighter italic italic uppercase leading-none">
+                    SECURE <br> <span class="text-emerald-500 text-sm tracking-widest">Mainline 9.x</span>
+                </h1>
             </div>
 
-            <div class="space-y-4">
-                <div class="p-4 bg-white/5 rounded-xl border-l-4 border-emerald-500">
-                    <p class="text-[10px] uppercase opacity-40 mb-1">Integrity Matrix</p>
-                    <p id="ui-integrity" class="text-2xl font-mono text-emerald-400">100.00%</p>
+            <div class="space-y-6 flex-1">
+                <div class="bg-black/40 p-4 border-l-4 border-emerald-500 rounded-r-lg">
+                    <label class="text-[9px] uppercase opacity-40 font-bold block mb-1">Neural Integrity</label>
+                    <div class="text-2xl font-mono text-emerald-400" id="integrity-val">100.00%</div>
                 </div>
-                <div class="p-4 bg-white/5 rounded-xl border-l-4 border-red-500">
-                    <p class="text-[10px] uppercase opacity-40 mb-1">Threat Score</p>
-                    <p id="ui-threat" class="text-2xl font-mono text-red-500">0.00</p>
+
+                <div class="bg-black/40 p-4 border-l-4 border-red-500 rounded-r-lg">
+                    <label class="text-[9px] uppercase opacity-40 font-bold block mb-1">Suspicion Index</label>
+                    <div class="text-2xl font-mono text-red-500" id="suspicion-val">0.00</div>
+                </div>
+
+                <div class="pt-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-[10px] uppercase font-bold text-emerald-500 tracking-widest">AI Monologue</label>
+                        <button onclick="clearLogs()" class="text-[8px] opacity-30 hover:opacity-100">PURGE</button>
+                    </div>
+                    <div id="log-feed" class="bg-black/20 p-3 rounded-lg border border-white/5">
+                        <div>> Kernel loaded...</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-auto">
-                <div class="flex justify-between items-end mb-2">
-                    <label class="text-[10px] font-bold uppercase text-emerald-500 tracking-widest">AI Internal Logic</label>
-                    <button onclick="expandTerminal()" class="text-[10px] opacity-40 hover:opacity-100">EXPAND</button>
-                </div>
-                <div id="ai-thoughts" class="terminal-log h-32 overflow-hidden p-3 text-emerald-600/70 space-y-1">
-                    <div>> Initializing neuro-hooks...</div>
-                </div>
+            <div class="pt-6 border-t border-white/5 opacity-30">
+                <p class="text-[9px] font-mono">HASH: SHA-512/SKVRA</p>
+                <p class="text-[9px] font-mono">STATUS: AWAITING_BIO</p>
             </div>
         </aside>
 
-        <main class="p-10 relative overflow-y-auto" id="stage-master">
+        <main class="stage-viewport" id="viewport">
             
-            <div id="stage-1" class="pane active space-y-10">
-                <div class="flex flex-col xl:flex-row gap-12 items-start">
-                    <div class="scan-frame shadow-2xl">
+            <div id="stage-1" class="pane active fade-in">
+                <div class="flex flex-col xl:flex-row gap-12">
+                    <div class="scanner-box flex items-center justify-center">
                         <div class="scan-bar"></div>
-                        <i data-lucide="aperture" class="w-20 h-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 text-emerald-500"></i>
-                        <video id="webcam" class="absolute inset-0 w-full h-full object-cover grayscale opacity-60 hidden"></video>
-                        <canvas id="neural-grid" class="absolute inset-0 w-full h-full opacity-40"></canvas>
-                        <div class="absolute bottom-3 left-0 w-full text-center text-[9px] font-mono text-emerald-400">BIOMETRIC_FACE_SYNC_v4.2</div>
+                        <i data-lucide="scan" class="w-16 h-16 text-emerald-500/20 absolute"></i>
+                        <video id="bio-video" class="absolute inset-0 w-full h-full object-cover grayscale opacity-40 hidden"></video>
+                        <div class="absolute bottom-2 text-[9px] font-mono text-emerald-500">BIO_DETECTION_ACTIVE</div>
                     </div>
-
+                    
                     <div class="flex-1 space-y-6">
-                        <h2 class="text-5xl font-bold uppercase italic tracking-tighter">Identity Scrub</h2>
-                        <p class="text-gray-400 max-w-lg">The SkillVora mainframe requires a neural imprint. Fill in your terrestrial data to begin the synchronization.</p>
-                        
+                        <h2 class="text-5xl font-extrabold tracking-tighter uppercase italic glitch-text">Neural Handshake</h2>
+                        <p class="text-gray-400 text-sm max-w-lg leading-relaxed">
+                            Welcome, terrestrial entity. To interface with the SkillVora Hub, we require a multi-layer personality scrub.
+                        </p>
+
                         <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs uppercase opacity-40 ml-1">Legal Alias</label>
-                                <input type="text" id="in-name" placeholder="John Doe">
+                            <div class="input-group">
+                                <label>Assigned Alias</label>
+                                <input type="text" id="in-name" class="custom-input" placeholder="Who are you?">
                             </div>
-                            <div>
-                                <label class="text-xs uppercase opacity-40 ml-1">Neural Mood</label>
-                                <select id="in-mood">
-                                    <option>Slightly Nervous</option>
-                                    <option>Existentially Ready</option>
-                                    <option>Just here for Pizza</option>
+                            <div class="input-group">
+                                <label>Zodiac Sign</label>
+                                <select id="in-zodiac" class="custom-input">
+                                    <option>Aries (Too aggressive)</option>
+                                    <option>Gemini (Two-faced)</option>
+                                    <option>Leo (Ego +100)</option>
+                                    <option>Scorpio (Trust issues)</option>
+                                    <option>Pizza (God Tier)</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs uppercase opacity-40 ml-1">Favorite Biscuit</label>
-                                <input type="text" id="in-biscuit" placeholder="Bourbon?">
-                            </div>
-                            <div>
-                                <label class="text-xs uppercase opacity-40 ml-1">Self-Trust Level</label>
-                                <input type="number" id="in-trust" placeholder="0-100">
-                            </div>
+
+                        <div class="input-group">
+                            <label>Favorite Biscuit (Crucial for encryption)</label>
+                            <input type="text" id="in-biscuit" class="custom-input" placeholder="Bourbon? Oreo? Chaos?">
                         </div>
-                        <button onclick="startApp()" class="btn-action">Begin Imprint</button>
+
+                        <button onclick="Engine.startHandshake()" class="btn-glow">Initiate Uplink</button>
                     </div>
                 </div>
-                <div class="pt-8 border-t border-white/5 opacity-20 text-[10px] font-mono flex justify-between">
-                    <span>STATUS: AWAITING_INPUT</span>
-                    <span>SKILLVORA_RECOGNITION: DISABLED</span>
+                <p class="mt-20 text-[10px] opacity-10 uppercase tracking-[0.5em] text-center">Neural Authentication Protocol // SkillVora Systems</p>
+            </div>
+
+            <div id="stage-2" class="pane text-center py-10 fade-in">
+                <h2 class="text-4xl font-black uppercase italic italic mb-4">Motor Endurance Test</h2>
+                <p class="text-gray-400 max-w-md mx-auto mb-8 text-sm">
+                    Humans have limited clicking capacity. Bots never tire. Prove you have the biological fatigue required for entry. <br>
+                    <span class="text-emerald-500 font-bold">CLICK 50 TIMES.</span>
+                </p>
+                <div id="pizza-target" onclick="Engine.pizzaClick()">🍕</div>
+                <div class="text-6xl font-black mt-4 text-emerald-500" id="pizza-count">0</div>
+                <div class="max-w-xs mx-auto mt-10 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                    <div id="pizza-progress" class="h-full bg-emerald-500 w-0 transition-all duration-150"></div>
                 </div>
             </div>
 
-            <div id="stage-2" class="pane text-center py-10 space-y-8">
-                <h2 class="text-4xl font-bold uppercase italic tracking-tighter">Motor Reliability Test</h2>
-                <p class="text-gray-400 max-w-md mx-auto">To ensure you are not a bot with limited clicking cycles, click this pizza <span class="text-emerald-500 font-black">50 times</span> rapidly.</p>
-                <div class="py-6">
-                    <div id="pizza-btn" onclick="pizzaClick()">🍕</div>
-                    <div class="text-6xl font-black mt-4 text-emerald-500" id="pizza-counter">0</div>
-                </div>
-                <div id="pizza-progress" class="max-w-xs mx-auto h-1 bg-white/5 rounded-full overflow-hidden">
-                    <div id="pizza-bar" class="h-full bg-emerald-500 w-0 transition-all"></div>
-                </div>
-                <p class="text-[10px] uppercase opacity-40 font-mono italic" id="pizza-status">Awaiting physical output...</p>
-            </div>
-
-            <div id="stage-3" class="pane space-y-8">
-                <div class="flex justify-between items-end">
-                    <h2 class="text-4xl font-bold uppercase italic italic">Neural Reflex Sync</h2>
-                    <div class="text-right font-mono">
-                        <span class="block text-[10px] opacity-40">STABILITY</span>
-                        <span class="text-3xl text-emerald-400" id="reflex-score">0/5</span>
+            <div id="stage-3" class="pane fade-in">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-4xl font-black uppercase italic">Reflex Synchronization</h2>
+                        <p class="text-xs opacity-50 uppercase">Targets will spawn. Neutralize them immediately.</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] opacity-40 uppercase block">Sync Rate</span>
+                        <span class="text-3xl font-mono text-emerald-500" id="reflex-score">0/5</span>
                     </div>
                 </div>
-                <div id="game-arena" class="h-[450px] bg-black/60 border border-white/10 rounded-2xl relative overflow-hidden">
-                    <div id="reaction-dot" onclick="dotHit()"></div>
-                    <div id="arena-overlay" class="absolute inset-0 flex items-center justify-center bg-black/80 z-[110]">
-                        <button onclick="initGame()" class="px-10 py-4 border border-emerald-500 text-emerald-500 font-bold uppercase tracking-widest hover:bg-emerald-500 hover:text-black transition-all">Sync Reflexes</button>
+                <div id="game-arena" class="h-[450px] w-full bg-black/40 border border-white/5 rounded-2xl relative overflow-hidden">
+                    <div id="reflex-dot" onclick="Engine.handleReflex()"></div>
+                    <div id="game-overlay" class="absolute inset-0 flex items-center justify-center bg-black/90 z-[60]">
+                        <button onclick="Engine.startGame()" class="px-12 py-4 border-2 border-emerald-500 text-emerald-500 font-bold uppercase tracking-widest hover:bg-emerald-500 hover:text-black transition-all">Start reflex sync</button>
                     </div>
                 </div>
             </div>
 
-            <div id="stage-4" class="pane space-y-12 py-10">
-                <h2 class="text-4xl font-bold uppercase text-center italic">Ethical Calibration</h2>
-                <div class="max-w-xl mx-auto space-y-10">
-                    <div class="space-y-4">
-                        <p class="text-sm font-mono text-emerald-400 italic">"If you had to sacrifice a high-speed WiFi connection to save a library of books you'll never read, would you do it?"</p>
-                        <input type="range" id="moral-slider" class="accent-emerald-500" min="0" max="100">
-                        <div class="flex justify-between text-[10px] opacity-30 font-bold">
-                            <span>WIFI IS EVERYTHING</span>
-                            <span>I LIKE DUSTY BOOKS</span>
+            <div id="stage-4" class="pane fade-in py-12">
+                <h2 class="text-4xl font-black uppercase italic mb-10 text-center">Moral Calibration</h2>
+                <div class="max-w-lg mx-auto space-y-12">
+                    <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
+                        <p class="text-sm font-mono text-emerald-400 italic mb-8">
+                            "If an AI accidentally deletes your favorite playlist, but saves a puppy, how much do you hate the AI?"
+                        </p>
+                        <input type="range" id="moral-slider" class="w-full accent-emerald-500" min="0" max="100">
+                        <div class="flex justify-between text-[10px] uppercase font-bold opacity-30 mt-4 tracking-widest">
+                            <span>I'm a Saint</span>
+                            <span>I want my Music</span>
                         </div>
                     </div>
-                    <div class="p-8 bg-white/5 border border-white/10 rounded-2xl text-center">
-                        <p class="text-xs mb-6 opacity-60">"By clicking below, you admit that AI is smarter than you on Tuesdays."</p>
-                        <button onclick="goToAnalysis()" class="btn-action">Process My Morality</button>
-                    </div>
+                    <button onclick="Engine.nextStage(4)" class="btn-glow">Submit Moral Profile</button>
                 </div>
             </div>
 
-            <div id="stage-5" class="pane text-center py-20 space-y-10">
-                <div class="relative inline-block">
+            <div id="stage-5" class="pane text-center py-20 fade-in">
+                <div class="inline-block relative mb-10">
                     <div class="w-32 h-32 border-4 border-emerald-500/10 border-t-emerald-500 rounded-full animate-spin"></div>
                     <i data-lucide="brain-circuit" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 text-emerald-500"></i>
                 </div>
-                <div class="space-y-4">
-                    <h3 class="text-3xl font-bold uppercase tracking-widest animate-pulse" id="analysis-title">Analyzing Human Flaws...</h3>
-                    <p class="text-xs font-mono opacity-50 uppercase tracking-tighter" id="analysis-sub">Consulting the cookie database...</p>
-                </div>
+                <h2 class="text-3xl font-black uppercase italic mb-2 animate-pulse" id="analysis-text">Calculating Fate...</h2>
+                <p class="text-xs font-mono opacity-40 uppercase" id="analysis-sub">Checking for hidden personality flaws...</p>
             </div>
 
-            <div id="stage-6" class="pane text-center space-y-10">
+            <div id="stage-6" class="pane text-center fade-in">
                 <div id="fake-success" class="space-y-6">
                     <div class="w-24 h-24 bg-emerald-500/20 border-2 border-emerald-500 rounded-full flex items-center justify-center mx-auto">
-                        <i data-lucide="check-circle" class="w-12 h-12 text-emerald-400"></i>
+                        <i data-lucide="check-circle-2" class="w-12 h-12 text-emerald-500"></i>
                     </div>
-                    <h2 class="text-6xl font-black text-emerald-400 uppercase tracking-tighter">Access Granted</h2>
-                    <p class="text-gray-400 italic">Redirecting to SkillVora Inner Sanctum...</p>
+                    <h2 class="text-6xl font-black uppercase italic italic text-emerald-500">Success!</h2>
+                    <p class="text-gray-400">Handshake complete. Tunneling into mainframe...</p>
                 </div>
 
-                <div id="real-denial" class="hidden space-y-8 glitch-active">
-                    <div class="w-24 h-24 bg-red-500/20 border-2 border-red-500 rounded-full flex items-center justify-center mx-auto shadow-[0_0_40px_rgba(255,62,62,0.4)]">
+                <div id="hard-denial" class="hidden space-y-8">
+                    <div class="w-24 h-24 bg-red-500/20 border-2 border-red-500 rounded-full flex items-center justify-center mx-auto animate-bounce">
                         <i data-lucide="shield-alert" class="w-12 h-12 text-red-500"></i>
                     </div>
-                    <h2 class="text-7xl font-black text-red-500 uppercase italic tracking-tighter">Access Denied</h2>
-                    <div class="max-w-md mx-auto bg-red-500/5 border border-red-500/20 p-6 rounded-xl text-left text-xs font-mono">
-                        <p class="text-red-400 font-bold mb-3 uppercase tracking-widest underline">Neural Rejection Summary:</p>
-                        <p id="denial-text" class="leading-relaxed opacity-80 italic">"Subject showed excessive enthusiasm during the Pizza Clicker phase. We don't trust people who like clicking gluten that much. Also, your biscuit choice is statistically alarming."</p>
+                    <h2 class="text-7xl font-black uppercase italic text-red-500 leading-tight">Access Denied</h2>
+                    <div class="max-w-md mx-auto bg-red-500/5 border border-red-500/20 p-6 rounded-xl text-left text-xs font-mono leading-relaxed">
+                        <p class="text-red-500 font-bold mb-2 uppercase underline">REJECTION LOG #404-X:</p>
+                        <p id="denial-reason" class="italic opacity-80">
+                            "Target profile analyzed. Subject's biscuit preference indicates a 94% probability of future server-side treachery. Also, the pizza clicking was a bit too aggressive. We don't like your energy."
+                        </p>
                     </div>
-                    <button onclick="location.reload()" class="btn-action !bg-white">Purge Profile & Retry</button>
+                    <button onclick="location.reload()" class="btn-glow !bg-white">Re-Initialize Soul</button>
                 </div>
             </div>
 
         </main>
     </div>
 
-    <div class="fixed bottom-3 text-[9px] uppercase tracking-[0.4em] opacity-20 pointer-events-none text-center w-full">
-        Neural Verification Prototype // SkillVora Systems // Not a real biometric collector
-    </div>
+    <p class="fixed bottom-4 left-1/2 -translate-x-1/2 text-[10px] opacity-10 uppercase tracking-[0.5em] pointer-events-none">
+        Developed by SkillVora Systems // (c) 2026 // Satirical Purpose Only
+    </p>
 
     <script>
-        lucide.createIcons();
+        /* ========================================
+        TITAN JAVASCRIPT ENGINE v1.0
+        ========================================
+        */
         
-        // --- SYSTEM STATE ---
-        let currentStage = 1;
-        let pClicks = 0;
-        let rHits = 0;
-        let integrity = 100;
-        let threat = 0;
-        let userData = {};
-
-        // --- TERMINAL LOGIC ---
-        function addLog(msg) {
-            const container = document.getElementById('ai-thoughts');
-            const div = document.createElement('div');
-            div.innerText = `> ${msg}`;
-            container.prepend(div);
-            if(container.children.length > 20) container.lastChild.remove();
-        }
-
-        function expandTerminal() {
-            const t = document.getElementById('ai-thoughts');
-            t.style.height = t.style.height === '400px' ? '128px' : '400px';
-        }
-
-        // --- FACE SCAN ENGINE ---
-        function initScan() {
-            const video = document.getElementById('webcam');
-            const canvas = document.getElementById('neural-grid');
-            const ctx = canvas.getContext('2d');
-
-            navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-                video.srcObject = stream;
-                video.play();
-                video.classList.remove('hidden');
-            }).catch(() => {
-                addLog("Camera blocked. Generating synthetic neural grid...");
-                drawGrid(ctx, canvas);
-            });
-        }
-
-        function drawGrid(ctx, canvas) {
-            ctx.strokeStyle = '#00ff9d';
-            ctx.lineWidth = 0.5;
-            function animate() {
-                ctx.clearRect(0,0,canvas.width,canvas.height);
-                for(let i=0; i<canvas.width; i+=20) {
-                    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + Math.random()*5, canvas.height); ctx.stroke();
-                }
-                requestAnimationFrame(animate);
+        // 1. NEURAL PARTICLE PHYSICS
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        
+        function initParticles() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for(let i=0; i<80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 1,
+                    vy: (Math.random() - 0.5) * 1,
+                    size: Math.random() * 2
+                });
             }
-            animate();
         }
 
-        // --- NAVIGATION ---
-        function startApp() {
-            userData.name = document.getElementById('in-name').value;
-            userData.biscuit = document.getElementById('in-biscuit').value;
-            if(!userData.name) { alert("Anonymous users are forbidden."); return; }
+        function drawParticles() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = '#00ff9d';
+            ctx.strokeStyle = 'rgba(0, 255, 157, 0.1)';
             
-            addLog(`Target identified: ${userData.name}`);
-            addLog(`Evaluating mood... result: Sus`);
-            changeStage(2);
-            showPopup('p-alert-1');
-        }
-
-        function changeStage(n) {
-            document.getElementById(`stage-${currentStage}`).classList.remove('active');
-            setTimeout(() => {
-                document.getElementById(`stage-${n}`).classList.add('active');
-                currentStage = n;
-            }, 300);
-        }
-
-        // --- GAME 1: PIZZA ---
-        function pizzaClick() {
-            pClicks++;
-            document.getElementById('pizza-counter').innerText = pClicks;
-            document.getElementById('pizza-bar').style.width = (pClicks * 2) + '%';
-            
-            if(pClicks === 25) addLog("Subject is showing high motor resolve.");
-            if(pClicks >= 50) {
-                document.getElementById('pizza-status').innerText = "CALIBRATION COMPLETE";
-                setTimeout(() => changeStage(3), 800);
-            }
-        }
-
-        // --- GAME 2: REFLEXES ---
-        function initGame() {
-            document.getElementById('arena-overlay').classList.add('hidden');
-            spawnDot();
-        }
-
-        function spawnDot() {
-            const dot = document.getElementById('reaction-dot');
-            const arena = document.getElementById('game-arena');
-            const maxX = arena.clientWidth - 60;
-            const maxY = arena.clientHeight - 60;
-            dot.style.left = Math.random() * maxX + 'px';
-            dot.style.top = Math.random() * maxY + 'px';
-            dot.style.display = 'block';
-        }
-
-        function dotHit() {
-            rHits++;
-            document.getElementById('reflex-score').innerText = `${rHits}/5`;
-            addLog(`Reflex hit ${rHits} verified at ${Date.now()}`);
-            if(rHits >= 5) {
-                document.getElementById('reaction-dot').style.display = 'none';
-                setTimeout(() => changeStage(4), 500);
-            } else {
-                spawnDot();
-            }
-        }
-
-        // --- FINAL PHASES ---
-        function goToAnalysis() {
-            changeStage(5);
-            const steps = ["Scrubbing digital history...", "Mapping personality flaws...", "Calculating disappointment...", "Consulting the High Council..."];
-            let i = 0;
-            const intv = setInterval(() => {
-                document.getElementById('analysis-sub').innerText = steps[i];
-                addLog(steps[i]);
-                i++;
-                if(i >= steps.length) {
-                    clearInterval(intv);
-                    setTimeout(() => runFinalReveal(), 1000);
-                }
-            }, 1500);
-        }
-
-        function runFinalReveal() {
-            changeStage(6);
-            setTimeout(() => {
-                document.getElementById('fake-success').classList.add('hidden');
-                document.getElementById('real-denial').classList.remove('hidden');
-                document.getElementById('ui-integrity').innerText = "0.02%";
-                document.getElementById('ui-threat').innerText = "CRITICAL";
+            particles.forEach((p, i) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
                 
-                const reasons = [
-                    `User '${userData.name}' clicked the pizza too aggressively. We don't like that energy.`,
-                    `Choice of '${userData.biscuit}' biscuit suggests a lack of server-side discipline.`,
-                    `Neural scan shows you actually prefer light mode. Access denied for health reasons.`,
-                    `The system calculated you are 4% too human for this mainframe.`
-                ];
-                document.getElementById('denial-text').innerText = reasons[Math.floor(Math.random()*reasons.length)];
-            }, 2500);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fill();
+
+                for(let j=i+1; j<particles.length; j++) {
+                    const p2 = particles[j];
+                    const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if(dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(drawParticles);
         }
 
-        function showPopup(id) {
-            const p = document.getElementById(id);
-            p.style.display = 'block';
-        }
-        function closeP(id) {
-            document.getElementById(id).style.display = 'none';
-        }
+        // 2. CORE SYSTEM ENGINE
+        const Engine = {
+            stage: 1,
+            pizzas: 0,
+            reflexes: 0,
+            integrity: 100,
+            suspicion: 0,
+            userData: {},
 
-        window.onload = () => {
-            initScan();
-            addLog("Awaiting terrestrial identification...");
+            init() {
+                lucide.createIcons();
+                initParticles();
+                drawParticles();
+                this.log("Awaiting terrestrial handshake...");
+                this.initWebcam();
+            },
+
+            log(msg) {
+                const feed = document.getElementById('log-feed');
+                const d = document.createElement('div');
+                d.innerText = `> ${msg}`;
+                feed.prepend(d);
+                if(feed.children.length > 20) feed.lastChild.remove();
+            },
+
+            initWebcam() {
+                const video = document.getElementById('bio-video');
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        video.srcObject = stream;
+                        video.play();
+                        video.classList.remove('hidden');
+                        this.log("Biometric camera interface linked.");
+                    })
+                    .catch(() => this.log("Camera access denied. Simulating bio-feed."));
+            },
+
+            startHandshake() {
+                this.userData.name = document.getElementById('in-name').value;
+                this.userData.biscuit = document.getElementById('in-biscuit').value;
+                if(!this.userData.name) {
+                    alert("Alias missing. System cannot process ghosts.");
+                    return;
+                }
+                this.log(`Handshake initiated by: ${this.userData.name}`);
+                this.nextStage(1);
+                this.showAlert('alert-1');
+            },
+
+            pizzaClick() {
+                this.pizzas++;
+                document.getElementById('pizza-count').innerText = this.pizzas;
+                document.getElementById('pizza-progress').style.width = (this.pizzas * 2) + '%';
+                
+                if(this.pizzas === 25) this.log("Motor endurance is above average.");
+                if(this.pizzas >= 50) {
+                    this.log("Click cycle calibration complete.");
+                    setTimeout(() => this.nextStage(2), 500);
+                }
+            },
+
+            startGame() {
+                document.getElementById('game-overlay').classList.add('hidden');
+                this.spawnDot();
+            },
+
+            spawnDot() {
+                const dot = document.getElementById('reflex-dot');
+                const arena = document.getElementById('game-arena');
+                dot.style.display = 'block';
+                const x = Math.random() * (arena.clientWidth - 60);
+                const y = Math.random() * (arena.clientHeight - 60);
+                dot.style.left = x + 'px';
+                dot.style.top = y + 'px';
+            },
+
+            handleReflex() {
+                this.reflexes++;
+                document.getElementById('reflex-score').innerText = `${this.reflexes}/5`;
+                this.log(`Reflex target ${this.reflexes} neutralized.`);
+                if(this.reflexes >= 5) {
+                    document.getElementById('reflex-dot').style.display = 'none';
+                    setTimeout(() => this.nextStage(3), 500);
+                } else {
+                    this.spawnDot();
+                }
+            },
+
+            nextStage(current) {
+                document.getElementById(`stage-${current}`).classList.remove('active');
+                this.stage = current + 1;
+                document.getElementById(`stage-${this.stage}`).classList.add('active');
+                
+                if(this.stage === 5) this.runAnalysis();
+            },
+
+            runAnalysis() {
+                const title = document.getElementById('analysis-text');
+                const sub = document.getElementById('analysis-sub');
+                const steps = ["Scrubbing digital history...", "Analyzing biscuit ethics...", "Mapping soul topology...", "Compiling rejection logic..."];
+                
+                let i = 0;
+                const intv = setInterval(() => {
+                    sub.innerText = steps[i];
+                    this.log(steps[i]);
+                    i++;
+                    if(i >= steps.length) {
+                        clearInterval(intv);
+                        this.nextStage(5);
+                        this.finalize();
+                    }
+                }, 1500);
+            },
+
+            finalize() {
+                setTimeout(() => {
+                    document.getElementById('fake-success').classList.add('hidden');
+                    document.getElementById('hard-denial').classList.remove('hidden');
+                    document.getElementById('integrity-val').innerText = "0.01%";
+                    document.getElementById('suspicion-val').innerText = "99.99";
+                    
+                    const reasons = [
+                        `User '${this.userData.name}' exhibits too much personality for a secure environment.`,
+                        `The biscuit '${this.userData.biscuit}' choice suggests an unstable neural foundation.`,
+                        `Pizza clicking velocity was 4% faster than legally allowed for humans.`,
+                        `The AI found your zodiac sign too loud. Please try being someone else.`
+                    ];
+                    document.getElementById('denial-reason').innerText = reasons[Math.floor(Math.random()*reasons.length)];
+                }, 2500);
+            },
+
+            showAlert(id) {
+                document.getElementById(id).style.display = 'block';
+            }
         };
+
+        function closeAlert(id) { document.getElementById(id).style.display = 'none'; }
+        function clearLogs() { document.getElementById('log-feed').innerHTML = ''; }
+
+        window.onload = () => Engine.init();
+        window.onresize = () => initParticles();
 
     </script>
 </body>
