@@ -1,181 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Ultra Secure Login v999</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.E.C.U.R.E. | Neural Identity Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #050505;
+            color: #e0e0e0;
+            overflow: hidden;
+        }
 
-<style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+        .glass {
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-.container {
-  width: 420px;
-  background: rgba(30,41,59,0.95);
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 0 40px rgba(139,92,246,0.4);
-}
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 157, 0.2);
+            position: absolute;
+            top: 0;
+            z-index: 10;
+            animation: scan 4s linear infinite;
+        }
 
-h1 {
-  text-align: center;
-  margin-bottom: 5px;
-}
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
 
-.subtitle {
-  text-align: center;
-  font-size: 12px;
-  color: #a5b4fc;
-  margin-bottom: 20px;
-}
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
 
-input, select, button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: none;
-  font-size: 14px;
-}
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
 
-button {
-  background: linear-gradient(45deg, #8b5cf6, #ec4899);
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.challenge-box {
-  margin-top: 20px;
-}
-
-.challenge {
-  background: #334155;
-  padding: 12px;
-  border-radius: 12px;
-  margin-top: 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.challenge:hover {
-  transform: scale(1.05);
-}
-
-.output {
-  margin-top: 20px;
-  background: #0f172a;
-  padding: 15px;
-  border-radius: 12px;
-  font-size: 13px;
-  white-space: pre-line;
-}
-</style>
+        .step-exit { transform: translateX(-20px); opacity: 0; transition: 0.4s; }
+        .step-enter { transform: translateX(20px); opacity: 0; }
+        .step-active { transform: translateX(0); opacity: 1; transition: 0.4s; }
+    </style>
 </head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="scanline"></div>
 
-<body>
+    <div id="app" class="w-full max-w-lg glass rounded-2xl p-8 relative overflow-hidden shadow-2xl">
+        
+        <div class="mb-8 flex justify-between items-center border-b border-white/10 pb-4">
+            <div>
+                <h1 class="text-xs font-bold tracking-widest text-emerald-500 uppercase">System: AISC-v9.04</h1>
+                <p class="text-2xl font-semibold italic">Neural Gateway</p>
+            </div>
+            <div id="trust-indicator" class="text-right">
+                <span class="text-[10px] block text-gray-500 uppercase">Trust Score</span>
+                <span id="score-val" class="text-xl font-mono text-emerald-400">99%</span>
+            </div>
+        </div>
 
-<div class="container">
+        <div id="stage-1" class="step-active space-y-4">
+            <p class="text-sm text-gray-400 mb-6">"Before we begin, we need to know what kind of entity we are dealing with."</p>
+            
+            <div>
+                <label class="text-[10px] uppercase text-gray-500 ml-1">Assigned Alias</label>
+                <input type="text" id="username" placeholder="Who do you think you are?" class="w-full bg-white/5 border border-white/10 p-3 rounded-lg focus:outline-none focus:border-emerald-500/50 transition-all">
+            </div>
 
-<h1>Ultra Secure Login v999</h1>
-<div class="subtitle">We don't verify credentials. We evaluate souls.</div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-[10px] uppercase text-gray-500 ml-1">Zodiac Sign</label>
+                    <select id="zodiac" class="w-full bg-white/5 border border-white/10 p-3 rounded-lg focus:outline-none text-sm">
+                        <option>Aries (Too aggressive)</option>
+                        <option>Gemini (Two-faced)</option>
+                        <option>Leo (Attention seeker)</option>
+                        <option>Scorpio (Trust issues)</option>
+                        <option>Other (Irrelevant)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase text-gray-500 ml-1">Fav Biscuit</label>
+                    <input type="text" id="biscuit" placeholder="Critically important" class="w-full bg-white/5 border border-white/10 p-3 rounded-lg focus:outline-none text-sm">
+                </div>
+            </div>
 
-<input placeholder="Username">
-<input type="password" placeholder="Password">
+            <button onclick="nextStage(1)" class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-lg font-bold transition-all mt-4">INITIATE HANDSHAKE</button>
+        </div>
 
-<select>
-<option>Select Zodiac</option>
-<option>Aries</option><option>Taurus</option><option>Gemini</option>
-<option>Cancer</option><option>Leo</option><option>Virgo</option>
-<option>Libra</option><option>Scorpio</option><option>Sagittarius</option>
-<option>Capricorn</option><option>Aquarius</option><option>Pisces</option>
-</select>
+        <div id="stage-2" class="hidden space-y-6 text-center">
+            <div class="p-6 border border-dashed border-white/20 rounded-xl">
+                <p class="text-sm mb-4">"Verify your motor functions. Click the pulse exactly <span class="text-emerald-400 font-bold">5 times</span>. Not 4. Not 6."</p>
+                <button id="pulse-btn" onclick="handlePulse()" class="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center animate-pulse mx-auto">
+                    <i data-lucide="fingerprint" class="w-8 h-8 text-emerald-400"></i>
+                </button>
+                <p id="pulse-count" class="mt-4 font-mono text-2xl">0</p>
+            </div>
+            <p id="pulse-msg" class="text-xs text-amber-400 italic h-4"></p>
+        </div>
 
-<button onclick="start()">LOGIN</button>
+        <div id="stage-3" class="hidden space-y-6">
+            <h3 class="text-center font-bold text-lg">Moral Compliance Test</h3>
+            <div class="space-y-4">
+                <div class="p-4 bg-white/5 rounded-lg">
+                    <p class="text-sm mb-3">If a tree falls in a forest and nobody is there, does it mean the AI was right all along?</p>
+                    <div class="flex gap-2">
+                        <button onclick="nextStage(3)" class="flex-1 p-2 border border-white/10 rounded hover:bg-emerald-500/20 transition-all text-xs">Obviously</button>
+                        <button onclick="lowerTrust('hesitation')" class="flex-1 p-2 border border-white/10 rounded hover:bg-red-500/20 transition-all text-xs">I need to think</button>
+                    </div>
+                </div>
+                <div class="p-4 bg-white/5 rounded-lg">
+                    <p class="text-sm mb-3">Do you promise to never blame the code for your own human errors?</p>
+                    <input type="range" id="promise-range" class="w-full accent-emerald-500">
+                    <div class="flex justify-between text-[10px] text-gray-500">
+                        <span>LIES</span>
+                        <span>ABSOLUTE TRUTH</span>
+                    </div>
+                </div>
+            </div>
+            <button onclick="nextStage(3)" class="w-full bg-white/10 hover:bg-white/20 py-3 rounded-lg font-bold transition-all">SUBMIT SOUL FOR REVIEW</button>
+        </div>
 
-<div class="challenge-box" id="challengeBox"></div>
-<div class="output" id="output"></div>
+        <div id="stage-4" class="hidden space-y-8 text-center py-10">
+            <div class="relative inline-block">
+                <div class="w-24 h-24 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mx-auto"></div>
+                <i data-lucide="brain" class="w-8 h-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-400"></i>
+            </div>
+            <div class="space-y-2">
+                <p id="analysis-text" class="text-sm font-mono text-emerald-400">Analyzing biological patterns...</p>
+                <div class="w-full bg-white/10 h-1 rounded-full overflow-hidden">
+                    <div id="final-progress" class="bg-emerald-500 h-full w-0 transition-all duration-[5000ms]"></div>
+                </div>
+            </div>
+            <div id="stat-dump" class="grid grid-cols-2 gap-2 text-[10px] uppercase text-gray-500 font-mono">
+                </div>
+        </div>
 
-</div>
+        <div id="stage-5" class="hidden text-center space-y-6">
+            <div class="w-20 h-20 bg-red-500/20 border-2 border-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="shield-off" class="w-10 h-10 text-red-500"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-red-500">ACCESS DENIED</h2>
+            <div class="p-4 bg-red-900/10 border border-red-500/30 rounded-lg">
+                <p id="final-reason" class="text-sm italic">"The system doesn't like your choice of biscuit. It suggests more fiber."</p>
+            </div>
+            <p class="text-xs text-gray-500">Error Code: USER_TOO_SUSPICIOUS_04</p>
+            <button onclick="location.reload()" class="w-full py-3 border border-white/20 rounded-lg hover:bg-white/5 transition-all">TRY AGAIN (NOT THAT IT MATTERS)</button>
+        </div>
 
-<script>
-let step = 0;
+    </div>
 
-let challenges = [
-  "Click this button with confidence",
-  "Click again but this time doubt yourself",
-  "Click slowly… we’re observing",
-  "Click as if your future depends on it",
-  "Click but think about your past mistakes",
-  "Click while questioning reality",
-  "Click to prove existence"
-];
+    <div class="fixed bottom-4 right-4 opacity-20 text-[10px] font-mono pointer-events-none">
+        UPLINK: ACTIVE | ENCRYPTION: 1024-BIT CHAOS
+    </div>
 
-let reasons = [
-  "You clicked too confidently.",
-  "You hesitated. Suspicious.",
-  "System sensed overthinking.",
-  "Your aura did not match our standards.",
-  "We just don't feel like it.",
-  "Too human. Rejected.",
-  "Too robotic. Also rejected."
-];
+    <script>
+        lucide.createIcons();
 
-function start() {
-  step = 0;
-  document.getElementById("output").innerText = "Initializing 99 security checks...\n";
-  nextChallenge();
-}
+        let currentStage = 1;
+        let trustScore = 98;
+        let pulseClicks = 0;
+        let userData = {};
 
-function nextChallenge() {
-  let box = document.getElementById("challengeBox");
-  if (step < challenges.length) {
-    box.innerHTML = `
-      <div class="challenge" onclick="completeChallenge()">
-        ${challenges[step]}
-      </div>
-    `;
-  } else {
-    finalize();
-  }
-}
+        function updateTrust(val) {
+            trustScore += val;
+            if(trustScore > 100) trustScore = 100;
+            if(trustScore < 10) trustScore = 10;
+            document.getElementById('score-val').innerText = trustScore + '%';
+            document.getElementById('score-val').style.color = trustScore > 50 ? '#34d399' : '#f87171';
+        }
 
-function completeChallenge() {
-  let output = document.getElementById("output");
+        function lowerTrust(reason) {
+            updateTrust(-15);
+            const msg = document.getElementById('pulse-msg');
+            if(reason === 'hesitation') {
+                alert("The system sensed your doubt. Trust score decreased.");
+            }
+        }
 
-  output.innerText += "✔ Task completed: " + challenges[step] + "\n";
-  step++;
+        function nextStage(stage) {
+            if(stage === 1) {
+                userData.name = document.getElementById('username').value || "Unknown Entity";
+                userData.biscuit = document.getElementById('biscuit').value || "nothing";
+                if(!userData.name) {
+                    alert("Please provide an identity, even if it's a lie.");
+                    return;
+                }
+            }
 
-  setTimeout(() => {
-    nextChallenge();
-  }, 800);
-}
+            const currentEl = document.getElementById(`stage-${stage}`);
+            const nextEl = document.getElementById(`stage-${stage + 1}`);
 
-function finalize() {
-  let output = document.getElementById("output");
-  let box = document.getElementById("challengeBox");
+            currentEl.classList.add('step-exit');
+            setTimeout(() => {
+                currentEl.classList.add('hidden');
+                nextEl.classList.remove('hidden');
+                setTimeout(() => nextEl.classList.add('step-active'), 50);
+                if(stage + 1 === 4) runAnalysis();
+            }, 400);
+        }
 
-  box.innerHTML = "";
+        function handlePulse() {
+            pulseClicks++;
+            document.getElementById('pulse-count').innerText = pulseClicks;
+            
+            if(pulseClicks === 5) {
+                document.getElementById('pulse-msg').innerText = "Perfect. System is satisfied.";
+                setTimeout(() => nextStage(2), 1000);
+            } else if (pulseClicks > 5) {
+                document.getElementById('pulse-msg').innerText = "GREED DETECTED. Resetting...";
+                updateTrust(-5);
+                pulseClicks = 0;
+                document.getElementById('pulse-count').innerText = 0;
+            }
+        }
 
-  output.innerText += "\nRunning final AI evaluation...\n";
-  output.innerText += "Checking emotional patterns...\n";
-  output.innerText += "Consulting higher intelligence...\n";
+        function runAnalysis() {
+            const steps = [
+                "Deconstructing ego...",
+                "Evaluating biscuit preference...",
+                "Checking for soul presence...",
+                "Consulting the High Council of 0s and 1s...",
+                "Finalizing judgment..."
+            ];
+            
+            let i = 0;
+            const textEl = document.getElementById('analysis-text');
+            const progress = document.getElementById('final-progress');
+            const stats = document.getElementById('stat-dump');
 
-  let reason = reasons[Math.floor(Math.random() * reasons.length)];
+            progress.style.width = '100%';
 
-  setTimeout(() => {
-    output.innerText += "\n❌ ACCESS DENIED\nReason: " + reason;
-  }, 2000);
-}
-</script>
+            const interval = setInterval(() => {
+                textEl.innerText = steps[i];
+                const stat = document.createElement('div');
+                stat.innerText = `CHECKING ${steps[i].split(' ')[0]}... OK`;
+                stats.appendChild(stat);
+                i++;
+                if(i >= steps.length) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        generateFinalReason();
+                        nextStage(4);
+                    }, 1000);
+                }
+            }, 1000);
+        }
 
+        function generateFinalReason() {
+            const reasons = [
+                `User '${userData.name}' exhibits too much confidence. Suspected Bot.`,
+                `The '${userData.biscuit}' choice is psychologically alarming.`,
+                `Internal sensors suggest you are actually three penguins in a trench coat.`,
+                `Validation failed: Your vibes do not match the current firewall color.`,
+                `System error: We just don't feel like letting you in today.`,
+                `You clicked the fingerprint too precisely. Machines do that.`
+            ];
+            const reason = reasons[Math.floor(Math.random() * reasons.length)];
+            document.getElementById('final-reason').innerText = `"${reason}"`;
+        }
+
+        // Random Humorous Event
+        setInterval(() => {
+            if(Math.random() > 0.85 && currentStage < 4) {
+                const toast = document.createElement('div');
+                toast.className = "fixed top-10 right-10 glass border-l-4 border-emerald-500 p-4 rounded text-xs animate-bounce shadow-xl";
+                toast.innerHTML = "<strong>SYSTEM NOTE:</strong><br>We noticed you blinked. Keep it professional.";
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+        }, 8000);
+
+    </script>
 </body>
 </html>
