@@ -3,472 +3,386 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.E.C.U.R.E. // SYSTEM MAINLINE</title>
+    <title>S.E.C.U.R.E. | NEURAL MAINLINE V10.4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;700&family=Space+Grotesk:wght@300;400;600;700&display=swap');
         
-        :root {
-            --neon-green: #00ff9d;
-            --neon-red: #ff3e3e;
-            --terminal-bg: #08080a;
-            --glass: rgba(15, 15, 20, 0.95);
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--terminal-bg);
-            color: #e0e0e0;
-            font-family: 'Space Grotesk', sans-serif;
-            overflow: hidden;
-        }
-
-        /* The Grid Background */
-        .grid-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 255, 157, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 157, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-            z-index: -1;
-            perspective: 1000px;
-        }
-
-        .grid-bg::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 20%, var(--terminal-bg) 80%);
-        }
-
-        /* Container Layout */
-        .app-container {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            width: 95vw;
-            height: 90vh;
-            margin: 5vh auto;
-            background: var(--glass);
-            border: 1px solid rgba(0, 255, 157, 0.2);
-            border-radius: 4px;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
-            position: relative;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Sidebar Styling */
-        .sidebar {
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .main-stage {
-            padding: 3rem;
-            overflow-y: auto;
-            position: relative;
-            scroll-behavior: smooth;
-        }
-
-        .main-stage::-webkit-scrollbar { width: 4px; }
-        .main-stage::-webkit-scrollbar-thumb { background: var(--neon-green); }
-
-        /* Dynamic Classes */
-        .stage-pane { display: none; opacity: 0; transition: 0.5s ease; }
-        .stage-pane.active { display: block; opacity: 1; }
-
-        /* Target Logic */
-        #reaction-target {
-            width: 60px;
-            height: 60px;
-            background: var(--neon-green);
-            border: 4px solid white;
-            border-radius: 50%;
-            position: absolute;
-            cursor: crosshair;
-            box-shadow: 0 0 30px var(--neon-green);
-            z-index: 100;
-            display: none;
-            transition: transform 0.1s;
-        }
-
-        #reaction-target:active { transform: scale(0.8); }
-
-        .terminal-text { font-family: 'Fira Code', monospace; }
+        :root { --green: #00ff9d; --red: #ff3e3e; --bg: #050507; }
+        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: #fff; overflow: hidden; height: 100vh; }
         
-        .btn-primary {
-            background: var(--neon-green);
-            color: black;
-            font-weight: 700;
-            padding: 1rem;
-            border-radius: 2px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: 0.3s;
-            width: 100%;
-        }
+        .glass { background: rgba(12, 12, 15, 0.98); backdrop-filter: blur(20px); border: 1px solid rgba(0, 255, 157, 0.2); }
+        
+        /* Face Scan Logic */
+        .scan-frame { position: relative; width: 240px; height: 240px; border: 2px solid rgba(0, 255, 157, 0.3); border-radius: 15px; overflow: hidden; background: #000; }
+        .scan-bar { position: absolute; width: 100%; height: 3px; background: var(--green); box-shadow: 0 0 20px var(--green); top: 0; animation: scanMove 3s ease-in-out infinite; z-index: 20; }
+        @keyframes scanMove { 0%, 100% { top: 0%; } 50% { top: 100%; } }
 
-        .btn-primary:hover {
-            box-shadow: 0 0 20px var(--neon-green);
-            filter: brightness(1.1);
-        }
+        /* Navigation Panes */
+        .pane { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; }
+        .pane.active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* Glitch Effect */
-        .access-denied {
-            color: var(--neon-red);
-            animation: shake 0.5s infinite;
-        }
+        /* UI Elements */
+        .btn-action { background: var(--green); color: #000; font-weight: 900; padding: 1.2rem; border-radius: 6px; width: 100%; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; }
+        .btn-action:hover { box-shadow: 0 0 30px var(--green); transform: scale(1.02); }
+        
+        .terminal-log { font-family: 'Fira Code', monospace; font-size: 11px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; transition: height 0.5s ease; }
+        
+        input, select, textarea { background: rgba(255,255,255,0.05)!important; border: 1px solid rgba(255,255,255,0.1)!important; color: var(--green)!important; padding: 14px; border-radius: 8px; width: 100%; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--green)!important; background: rgba(255,255,255,0.08)!important; }
 
-        @keyframes shake {
-            0% { transform: translate(0); }
-            25% { transform: translate(2px, -2px); }
-            50% { transform: translate(-2px, 2px); }
-            75% { transform: translate(2px, 2px); }
-            100% { transform: translate(0); }
-        }
+        /* Game Elements */
+        #reaction-dot { width: 55px; height: 55px; background: var(--green); border-radius: 50%; position: absolute; cursor: pointer; display: none; z-index: 100; border: 4px solid #fff; box-shadow: 0 0 25px var(--green); }
+        #pizza-btn { font-size: 80px; cursor: pointer; transition: transform 0.1s; user-select: none; display: inline-block; }
+        #pizza-btn:active { transform: scale(1.4) rotate(10deg); }
 
-        .progress-fill {
-            height: 100%;
-            background: var(--neon-green);
-            width: 0%;
-            transition: width 0.1s linear;
-        }
+        /* Popups */
+        .popup-window { position: fixed; background: #ff3e3e; color: white; padding: 20px; border-radius: 12px; font-weight: bold; z-index: 1000; display: none; box-shadow: 0 20px 50px rgba(0,0,0,0.8); width: 300px; }
 
-        /* Custom Input Styling */
-        input, select, textarea {
-            background: rgba(255, 255, 255, 0.03) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            padding: 12px !important;
-            color: var(--neon-green) !important;
-            font-family: 'Fira Code', monospace !important;
-            width: 100%;
-            margin-bottom: 1rem;
-        }
-
-        input:focus { border-color: var(--neon-green) !important; outline: none; }
+        /* Glitch Graphics */
+        .glitch-active { animation: glitchSkew 0.2s infinite; }
+        @keyframes glitchSkew { 0% { transform: skew(0); } 20% { transform: skew(3deg); } 40% { transform: skew(-3deg); } 100% { transform: skew(0); } }
 
     </style>
 </head>
-<body>
+<body class="flex items-center justify-center p-6">
 
-    <div class="grid-bg"></div>
+    <div id="p-alert-1" class="popup-window" style="top: 15%; right: 10%;">
+        <div class="flex justify-between"><span>SECURITY ALERT</span><button onclick="closeP('p-alert-1')">X</button></div>
+        <p class="text-xs mt-2 font-normal">UNAUTHORIZED HUMOR DETECTED IN SECTOR 7G.</p>
+    </div>
 
-    <div class="app-container" id="secure-app">
-        <aside class="sidebar">
-            <div class="mb-10">
-                <div class="flex items-center gap-3">
-                    <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10b981]"></div>
-                    <span class="text-[10px] uppercase tracking-[0.3em] font-bold text-emerald-500">Node: SKILLVORA_9X</span>
+    <div class="glass w-full max-w-6xl h-[90vh] rounded-3xl grid grid-cols-1 lg:grid-cols-[340px_1fr] overflow-hidden shadow-2xl">
+        
+        <aside class="bg-black/40 border-r border-white/5 p-8 flex flex-col gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] font-bold tracking-[0.4em] text-emerald-500 uppercase">Uplink: Active</span>
                 </div>
-                <h1 class="text-2xl font-black italic tracking-tighter mt-2">SECURE v9.0</h1>
+                <h1 class="text-3xl font-black italic tracking-tighter uppercase leading-none">S.E.C.U.R.E. <br><span class="text-emerald-500 text-sm tracking-widest">Neural Mainline</span></h1>
             </div>
 
-            <div class="space-y-6 flex-1">
-                <div class="bg-black/40 p-4 border-l-2 border-emerald-500">
-                    <label class="text-[10px] uppercase opacity-40 block mb-1">Neural Integrity</label>
-                    <div class="text-xl font-mono text-emerald-400" id="integrity-stat">100.00%</div>
+            <div class="space-y-4">
+                <div class="p-4 bg-white/5 rounded-xl border-l-4 border-emerald-500">
+                    <p class="text-[10px] uppercase opacity-40 mb-1">Integrity Matrix</p>
+                    <p id="ui-integrity" class="text-2xl font-mono text-emerald-400">100.00%</p>
                 </div>
-
-                <div class="bg-black/40 p-4 border-l-2 border-red-500">
-                    <label class="text-[10px] uppercase opacity-40 block mb-1">Threat Level</label>
-                    <div class="text-xl font-mono text-red-500" id="threat-stat">NEGLIGIBLE</div>
-                </div>
-
-                <div class="mt-4">
-                    <label class="text-[10px] uppercase opacity-40 block mb-2">Live Telemetry</label>
-                    <div id="log-feed" class="text-[9px] font-mono text-emerald-600/60 leading-relaxed h-48 overflow-hidden">
-                        <div>> Initializing login hooks...</div>
-                        <div>> Loading chaos modules...</div>
-                    </div>
+                <div class="p-4 bg-white/5 rounded-xl border-l-4 border-red-500">
+                    <p class="text-[10px] uppercase opacity-40 mb-1">Threat Score</p>
+                    <p id="ui-threat" class="text-2xl font-mono text-red-500">0.00</p>
                 </div>
             </div>
 
-            <div class="pt-6 border-t border-white/5">
-                <p class="text-[8px] font-mono opacity-30">ENCRYPTION: AES-256-CHAOS</p>
-                <p class="text-[8px] font-mono opacity-30">LOCAL TIME: <span id="clock"></span></p>
+            <div class="mt-auto">
+                <div class="flex justify-between items-end mb-2">
+                    <label class="text-[10px] font-bold uppercase text-emerald-500 tracking-widest">AI Internal Logic</label>
+                    <button onclick="expandTerminal()" class="text-[10px] opacity-40 hover:opacity-100">EXPAND</button>
+                </div>
+                <div id="ai-thoughts" class="terminal-log h-32 overflow-hidden p-3 text-emerald-600/70 space-y-1">
+                    <div>> Initializing neuro-hooks...</div>
+                </div>
             </div>
         </aside>
 
-        <main class="main-stage" id="stage-master">
+        <main class="p-10 relative overflow-y-auto" id="stage-master">
             
-            <div id="stage-0" class="stage-pane active">
-                <div class="max-w-xl">
-                    <h2 class="text-5xl font-bold tracking-tighter uppercase mb-4">Neural Entry</h2>
-                    <p class="text-gray-400 leading-relaxed mb-8">This terminal is protected by the SkillVora Neural Security Layer. Any attempt at unauthorized entry will result in immediate digital personality scrubbing.</p>
-                    
-                    <div class="space-y-4">
-                        <label class="text-xs uppercase font-bold text-emerald-500">Assigned Alias</label>
-                        <input type="text" id="input-name" placeholder="Who are you?">
+            <div id="stage-1" class="pane active space-y-10">
+                <div class="flex flex-col xl:flex-row gap-12 items-start">
+                    <div class="scan-frame shadow-2xl">
+                        <div class="scan-bar"></div>
+                        <i data-lucide="aperture" class="w-20 h-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 text-emerald-500"></i>
+                        <video id="webcam" class="absolute inset-0 w-full h-full object-cover grayscale opacity-60 hidden"></video>
+                        <canvas id="neural-grid" class="absolute inset-0 w-full h-full opacity-40"></canvas>
+                        <div class="absolute bottom-3 left-0 w-full text-center text-[9px] font-mono text-emerald-400">BIOMETRIC_FACE_SYNC_v4.2</div>
+                    </div>
+
+                    <div class="flex-1 space-y-6">
+                        <h2 class="text-5xl font-bold uppercase italic tracking-tighter">Identity Scrub</h2>
+                        <p class="text-gray-400 max-w-lg">The SkillVora mainframe requires a neural imprint. Fill in your terrestrial data to begin the synchronization.</p>
                         
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="text-xs uppercase font-bold opacity-40">Zodiac Sign</label>
-                                <select id="input-zodiac">
-                                    <option>Aries</option><option>Gemini</option><option>Leo</option>
-                                    <option>Scorpio</option><option>The One Who Wins</option>
-                                </select>
+                                <label class="text-xs uppercase opacity-40 ml-1">Legal Alias</label>
+                                <input type="text" id="in-name" placeholder="John Doe">
                             </div>
                             <div>
-                                <label class="text-xs uppercase font-bold opacity-40">Fav Biscuit</label>
-                                <input type="text" id="input-biscuit" placeholder="Critically important">
+                                <label class="text-xs uppercase opacity-40 ml-1">Neural Mood</label>
+                                <select id="in-mood">
+                                    <option>Slightly Nervous</option>
+                                    <option>Existentially Ready</option>
+                                    <option>Just here for Pizza</option>
+                                </select>
                             </div>
                         </div>
-
-                        <button onclick="System.next(0)" class="btn-primary mt-6">Initiate Handshake</button>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs uppercase opacity-40 ml-1">Favorite Biscuit</label>
+                                <input type="text" id="in-biscuit" placeholder="Bourbon?">
+                            </div>
+                            <div>
+                                <label class="text-xs uppercase opacity-40 ml-1">Self-Trust Level</label>
+                                <input type="number" id="in-trust" placeholder="0-100">
+                            </div>
+                        </div>
+                        <button onclick="startApp()" class="btn-action">Begin Imprint</button>
                     </div>
+                </div>
+                <div class="pt-8 border-t border-white/5 opacity-20 text-[10px] font-mono flex justify-between">
+                    <span>STATUS: AWAITING_INPUT</span>
+                    <span>SKILLVORA_RECOGNITION: DISABLED</span>
                 </div>
             </div>
 
-            <div id="stage-1" class="stage-pane text-center py-10">
-                <div class="relative w-64 h-64 mx-auto mb-10">
-                    <div class="absolute inset-0 border border-emerald-500/30 rounded-full animate-ping"></div>
-                    <div class="absolute inset-4 border border-emerald-500/50 rounded-full flex items-center justify-center">
-                        <i data-lucide="scan-eye" class="w-24 h-24 text-emerald-400"></i>
-                    </div>
+            <div id="stage-2" class="pane text-center py-10 space-y-8">
+                <h2 class="text-4xl font-bold uppercase italic tracking-tighter">Motor Reliability Test</h2>
+                <p class="text-gray-400 max-w-md mx-auto">To ensure you are not a bot with limited clicking cycles, click this pizza <span class="text-emerald-500 font-black">50 times</span> rapidly.</p>
+                <div class="py-6">
+                    <div id="pizza-btn" onclick="pizzaClick()">🍕</div>
+                    <div class="text-6xl font-black mt-4 text-emerald-500" id="pizza-counter">0</div>
                 </div>
-                <h3 class="text-3xl font-bold uppercase mb-2" id="scan-title">Biometric Scrub</h3>
-                <p class="text-emerald-500 font-mono text-sm tracking-widest" id="scan-status">CALIBRATING RETINAL MESH...</p>
-                <div class="max-w-sm mx-auto mt-6 bg-white/5 h-1 rounded-full overflow-hidden">
-                    <div class="progress-fill" id="scan-progress"></div>
+                <div id="pizza-progress" class="max-w-xs mx-auto h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div id="pizza-bar" class="h-full bg-emerald-500 w-0 transition-all"></div>
                 </div>
+                <p class="text-[10px] uppercase opacity-40 font-mono italic" id="pizza-status">Awaiting physical output...</p>
             </div>
 
-            <div id="stage-2" class="stage-pane">
-                <div class="flex justify-between items-center mb-6">
-                    <div>
-                        <h3 class="text-3xl font-bold uppercase italic">Reflex Check</h3>
-                        <p class="text-xs opacity-50 uppercase">Humans click slow. Bots click fast. Be human.</p>
-                    </div>
-                    <div class="text-right">
+            <div id="stage-3" class="pane space-y-8">
+                <div class="flex justify-between items-end">
+                    <h2 class="text-4xl font-bold uppercase italic italic">Neural Reflex Sync</h2>
+                    <div class="text-right font-mono">
                         <span class="block text-[10px] opacity-40">STABILITY</span>
-                        <span class="text-2xl font-mono text-emerald-400" id="hit-count">0/5</span>
+                        <span class="text-3xl text-emerald-400" id="reflex-score">0/5</span>
                     </div>
                 </div>
-                
-                <div id="game-arena" class="h-[400px] w-full bg-black/40 border border-white/10 rounded-lg relative overflow-hidden">
-                    <div id="reaction-target"></div>
-                    <div id="game-overlay" class="absolute inset-0 flex items-center justify-center bg-black/80 z-[110]">
-                        <button onclick="Game.start()" class="px-8 py-3 border border-emerald-500 text-emerald-500 uppercase font-bold hover:bg-emerald-500 hover:text-black transition-all">Start reflex sync</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="stage-3" class="stage-pane">
-                <h3 class="text-3xl font-bold uppercase mb-8">Morality Balance</h3>
-                <div class="space-y-12 max-w-lg">
-                    <div class="p-6 bg-white/5 border border-white/10 rounded">
-                        <p class="text-sm mb-6 font-mono text-emerald-400">If you had to delete a library or a pizza shop to save this server, which would you choose?</p>
-                        <input type="range" class="accent-emerald-500" min="0" max="100" id="moral-slider">
-                        <div class="flex justify-between text-[10px] uppercase opacity-40 mt-2">
-                            <span>Pizza is Life</span>
-                            <span>Books are okay</span>
-                        </div>
-                    </div>
-
-                    <div class="p-6 bg-white/5 border border-white/10 rounded">
-                        <p class="text-sm mb-4 font-mono text-emerald-400">Do you promise not to use this AI to take over the world (without me)?</p>
-                        <div class="flex gap-4">
-                            <button onclick="System.next(3)" class="flex-1 py-3 border border-emerald-500/20 hover:bg-emerald-500/10 transition-all text-xs uppercase">I Promise</button>
-                            <button onclick="System.threaten('Lying detected')" class="flex-1 py-3 border border-red-500/20 hover:bg-red-500/10 transition-all text-xs uppercase">Maybe later</button>
-                        </div>
+                <div id="game-arena" class="h-[450px] bg-black/60 border border-white/10 rounded-2xl relative overflow-hidden">
+                    <div id="reaction-dot" onclick="dotHit()"></div>
+                    <div id="arena-overlay" class="absolute inset-0 flex items-center justify-center bg-black/80 z-[110]">
+                        <button onclick="initGame()" class="px-10 py-4 border border-emerald-500 text-emerald-500 font-bold uppercase tracking-widest hover:bg-emerald-500 hover:text-black transition-all">Sync Reflexes</button>
                     </div>
                 </div>
             </div>
 
-            <div id="stage-4" class="stage-pane text-center py-20">
-                <div class="inline-block relative">
+            <div id="stage-4" class="pane space-y-12 py-10">
+                <h2 class="text-4xl font-bold uppercase text-center italic">Ethical Calibration</h2>
+                <div class="max-w-xl mx-auto space-y-10">
+                    <div class="space-y-4">
+                        <p class="text-sm font-mono text-emerald-400 italic">"If you had to sacrifice a high-speed WiFi connection to save a library of books you'll never read, would you do it?"</p>
+                        <input type="range" id="moral-slider" class="accent-emerald-500" min="0" max="100">
+                        <div class="flex justify-between text-[10px] opacity-30 font-bold">
+                            <span>WIFI IS EVERYTHING</span>
+                            <span>I LIKE DUSTY BOOKS</span>
+                        </div>
+                    </div>
+                    <div class="p-8 bg-white/5 border border-white/10 rounded-2xl text-center">
+                        <p class="text-xs mb-6 opacity-60">"By clicking below, you admit that AI is smarter than you on Tuesdays."</p>
+                        <button onclick="goToAnalysis()" class="btn-action">Process My Morality</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-5" class="pane text-center py-20 space-y-10">
+                <div class="relative inline-block">
                     <div class="w-32 h-32 border-4 border-emerald-500/10 border-t-emerald-500 rounded-full animate-spin"></div>
-                    <i data-lucide="shield-check" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-emerald-500"></i>
+                    <i data-lucide="brain-circuit" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 text-emerald-500"></i>
                 </div>
-                <h3 class="text-2xl font-bold mt-8 uppercase tracking-widest text-emerald-500 animate-pulse">Finalizing Permission...</h3>
-                <p id="final-loading-text" class="text-[10px] font-mono opacity-40 mt-4 uppercase">Syncing with global authorities...</p>
+                <div class="space-y-4">
+                    <h3 class="text-3xl font-bold uppercase tracking-widest animate-pulse" id="analysis-title">Analyzing Human Flaws...</h3>
+                    <p class="text-xs font-mono opacity-50 uppercase tracking-tighter" id="analysis-sub">Consulting the cookie database...</p>
+                </div>
             </div>
 
-            <div id="stage-5" class="stage-pane text-center">
-                <div class="access-denied mb-8">
-                    <div class="w-24 h-24 border-4 border-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i data-lucide="shield-off" class="w-12 h-12"></i>
+            <div id="stage-6" class="pane text-center space-y-10">
+                <div id="fake-success" class="space-y-6">
+                    <div class="w-24 h-24 bg-emerald-500/20 border-2 border-emerald-500 rounded-full flex items-center justify-center mx-auto">
+                        <i data-lucide="check-circle" class="w-12 h-12 text-emerald-400"></i>
                     </div>
-                    <h1 class="text-6xl font-black italic uppercase tracking-tighter">Access Denied</h1>
+                    <h2 class="text-6xl font-black text-emerald-400 uppercase tracking-tighter">Access Granted</h2>
+                    <p class="text-gray-400 italic">Redirecting to SkillVora Inner Sanctum...</p>
                 </div>
 
-                <div class="max-w-md mx-auto bg-red-500/5 border border-red-500/20 p-6 rounded-lg text-left">
-                    <p class="text-red-500 font-bold mb-2 text-xs uppercase font-mono">Incident Report #SK-404:</p>
-                    <p id="denial-report" class="text-sm opacity-80 leading-relaxed italic">
-                        "User identity verified. However, the system has detected that you are too cool to be allowed into this boring server. Security protocol dictates that we must keep you out for your own safety."
-                    </p>
+                <div id="real-denial" class="hidden space-y-8 glitch-active">
+                    <div class="w-24 h-24 bg-red-500/20 border-2 border-red-500 rounded-full flex items-center justify-center mx-auto shadow-[0_0_40px_rgba(255,62,62,0.4)]">
+                        <i data-lucide="shield-alert" class="w-12 h-12 text-red-500"></i>
+                    </div>
+                    <h2 class="text-7xl font-black text-red-500 uppercase italic tracking-tighter">Access Denied</h2>
+                    <div class="max-w-md mx-auto bg-red-500/5 border border-red-500/20 p-6 rounded-xl text-left text-xs font-mono">
+                        <p class="text-red-400 font-bold mb-3 uppercase tracking-widest underline">Neural Rejection Summary:</p>
+                        <p id="denial-text" class="leading-relaxed opacity-80 italic">"Subject showed excessive enthusiasm during the Pizza Clicker phase. We don't trust people who like clicking gluten that much. Also, your biscuit choice is statistically alarming."</p>
+                    </div>
+                    <button onclick="location.reload()" class="btn-action !bg-white">Purge Profile & Retry</button>
                 </div>
-
-                <button onclick="location.reload()" class="mt-10 px-10 py-4 border border-white/20 hover:bg-white/5 transition-all text-sm uppercase tracking-widest">Retry sync</button>
             </div>
 
         </main>
     </div>
 
+    <div class="fixed bottom-3 text-[9px] uppercase tracking-[0.4em] opacity-20 pointer-events-none text-center w-full">
+        Neural Verification Prototype // SkillVora Systems // Not a real biometric collector
+    </div>
+
     <script>
-        // --- GLOBAL SYSTEM STATE ---
-        const System = {
-            stage: 0,
-            integrity: 100.00,
-            threat: 'NEGLIGIBLE',
-            user: { name: '', zodiac: '', biscuit: '' },
+        lucide.createIcons();
+        
+        // --- SYSTEM STATE ---
+        let currentStage = 1;
+        let pClicks = 0;
+        let rHits = 0;
+        let integrity = 100;
+        let threat = 0;
+        let userData = {};
 
-            init() {
-                lucide.createIcons();
-                this.updateClock();
-                setInterval(() => this.updateClock(), 1000);
-                this.log("System kernel initialized.");
-            },
+        // --- TERMINAL LOGIC ---
+        function addLog(msg) {
+            const container = document.getElementById('ai-thoughts');
+            const div = document.createElement('div');
+            div.innerText = `> ${msg}`;
+            container.prepend(div);
+            if(container.children.length > 20) container.lastChild.remove();
+        }
 
-            log(msg) {
-                const feed = document.getElementById('log-feed');
-                const line = document.createElement('div');
-                line.innerText = `> ${msg}`;
-                feed.prepend(line);
-                if(feed.children.length > 15) feed.lastChild.remove();
-            },
+        function expandTerminal() {
+            const t = document.getElementById('ai-thoughts');
+            t.style.height = t.style.height === '400px' ? '128px' : '400px';
+        }
 
-            updateClock() {
-                document.getElementById('clock').innerText = new Date().toLocaleTimeString();
-            },
+        // --- FACE SCAN ENGINE ---
+        function initScan() {
+            const video = document.getElementById('webcam');
+            const canvas = document.getElementById('neural-grid');
+            const ctx = canvas.getContext('2d');
 
-            next(current) {
-                if(current === 0) {
-                    this.user.name = document.getElementById('input-name').value || 'Unknown';
-                    this.user.zodiac = document.getElementById('input-zodiac').value;
-                    this.user.biscuit = document.getElementById('input-biscuit').value || 'none';
-                    if(this.user.name === 'Unknown') {
-                        this.threaten("Alias requirement missing.");
-                        return;
-                    }
-                    this.log(`User '${this.user.name}' attempting handshake...`);
-                    this.runScan();
+            navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+                video.srcObject = stream;
+                video.play();
+                video.classList.remove('hidden');
+            }).catch(() => {
+                addLog("Camera blocked. Generating synthetic neural grid...");
+                drawGrid(ctx, canvas);
+            });
+        }
+
+        function drawGrid(ctx, canvas) {
+            ctx.strokeStyle = '#00ff9d';
+            ctx.lineWidth = 0.5;
+            function animate() {
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                for(let i=0; i<canvas.width; i+=20) {
+                    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + Math.random()*5, canvas.height); ctx.stroke();
                 }
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
 
-                document.getElementById(`stage-${this.stage}`).classList.remove('active');
-                this.stage++;
-                document.getElementById(`stage-${this.stage}`).classList.add('active');
+        // --- NAVIGATION ---
+        function startApp() {
+            userData.name = document.getElementById('in-name').value;
+            userData.biscuit = document.getElementById('in-biscuit').value;
+            if(!userData.name) { alert("Anonymous users are forbidden."); return; }
+            
+            addLog(`Target identified: ${userData.name}`);
+            addLog(`Evaluating mood... result: Sus`);
+            changeStage(2);
+            showPopup('p-alert-1');
+        }
 
-                if(this.stage === 4) this.finalize();
-            },
+        function changeStage(n) {
+            document.getElementById(`stage-${currentStage}`).classList.remove('active');
+            setTimeout(() => {
+                document.getElementById(`stage-${n}`).classList.add('active');
+                currentStage = n;
+            }, 300);
+        }
 
-            threaten(reason) {
-                this.integrity -= (Math.random() * 10);
-                document.getElementById('integrity-stat').innerText = this.integrity.toFixed(2) + '%';
-                this.log(`THREAT: ${reason}`);
-                if(this.integrity < 80) {
-                    document.getElementById('threat-stat').innerText = 'ELEVATED';
-                    document.getElementById('threat-stat').classList.add('text-amber-500');
+        // --- GAME 1: PIZZA ---
+        function pizzaClick() {
+            pClicks++;
+            document.getElementById('pizza-counter').innerText = pClicks;
+            document.getElementById('pizza-bar').style.width = (pClicks * 2) + '%';
+            
+            if(pClicks === 25) addLog("Subject is showing high motor resolve.");
+            if(pClicks >= 50) {
+                document.getElementById('pizza-status').innerText = "CALIBRATION COMPLETE";
+                setTimeout(() => changeStage(3), 800);
+            }
+        }
+
+        // --- GAME 2: REFLEXES ---
+        function initGame() {
+            document.getElementById('arena-overlay').classList.add('hidden');
+            spawnDot();
+        }
+
+        function spawnDot() {
+            const dot = document.getElementById('reaction-dot');
+            const arena = document.getElementById('game-arena');
+            const maxX = arena.clientWidth - 60;
+            const maxY = arena.clientHeight - 60;
+            dot.style.left = Math.random() * maxX + 'px';
+            dot.style.top = Math.random() * maxY + 'px';
+            dot.style.display = 'block';
+        }
+
+        function dotHit() {
+            rHits++;
+            document.getElementById('reflex-score').innerText = `${rHits}/5`;
+            addLog(`Reflex hit ${rHits} verified at ${Date.now()}`);
+            if(rHits >= 5) {
+                document.getElementById('reaction-dot').style.display = 'none';
+                setTimeout(() => changeStage(4), 500);
+            } else {
+                spawnDot();
+            }
+        }
+
+        // --- FINAL PHASES ---
+        function goToAnalysis() {
+            changeStage(5);
+            const steps = ["Scrubbing digital history...", "Mapping personality flaws...", "Calculating disappointment...", "Consulting the High Council..."];
+            let i = 0;
+            const intv = setInterval(() => {
+                document.getElementById('analysis-sub').innerText = steps[i];
+                addLog(steps[i]);
+                i++;
+                if(i >= steps.length) {
+                    clearInterval(intv);
+                    setTimeout(() => runFinalReveal(), 1000);
                 }
-            },
+            }, 1500);
+        }
 
-            runScan() {
-                const bar = document.getElementById('scan-progress');
-                const status = document.getElementById('scan-status');
-                const msgs = ["ISOLATING NEURAL SIGNATURE...", "CHECKING BISCUIT PREFERENCE...", "VALIDATING ZODIAC EGO...", "VIBE CHECK COMPLETE."];
+        function runFinalReveal() {
+            changeStage(6);
+            setTimeout(() => {
+                document.getElementById('fake-success').classList.add('hidden');
+                document.getElementById('real-denial').classList.remove('hidden');
+                document.getElementById('ui-integrity').innerText = "0.02%";
+                document.getElementById('ui-threat').innerText = "CRITICAL";
                 
-                let progress = 0;
-                let msgIndex = 0;
-                const interval = setInterval(() => {
-                    progress += 1.5;
-                    bar.style.width = progress + '%';
-                    
-                    if(progress % 25 < 1.5) {
-                        status.innerText = msgs[msgIndex];
-                        this.log(msgs[msgIndex]);
-                        msgIndex++;
-                    }
-
-                    if(progress >= 100) {
-                        clearInterval(interval);
-                        setTimeout(() => this.next(1), 800);
-                    }
-                }, 50);
-            },
-
-            finalize() {
-                const text = document.getElementById('final-loading-text');
-                const steps = ["Consulting the High Council...", "Checking your browser history (just kidding)...", "Finalizing Denial Logic...", "Sending rejection email..."];
-                let i = 0;
-                const intv = setInterval(() => {
-                    text.innerText = steps[i];
-                    this.log(steps[i]);
-                    i++;
-                    if(i >= steps.length) {
-                        clearInterval(intv);
-                        this.generateDenial();
-                        setTimeout(() => this.next(4), 1000);
-                    }
-                }, 1500);
-            },
-
-            generateDenial() {
                 const reasons = [
-                    `User '${this.user.name}' is too suspicious for the mainstream.`,
-                    `The favorite biscuit '${this.user.biscuit}' is a known security vulnerability.`,
-                    `The system doesn't trust a '${this.user.zodiac}'. Typical behavior.`,
-                    `Your motor reflexes (Stage 2) were too human. We only accept bots today.`,
-                    `We found a typo in your soul. Access denied.`
+                    `User '${userData.name}' clicked the pizza too aggressively. We don't like that energy.`,
+                    `Choice of '${userData.biscuit}' biscuit suggests a lack of server-side discipline.`,
+                    `Neural scan shows you actually prefer light mode. Access denied for health reasons.`,
+                    `The system calculated you are 4% too human for this mainframe.`
                 ];
-                document.getElementById('denial-report').innerText = reasons[Math.floor(Math.random() * reasons.length)];
-            }
+                document.getElementById('denial-text').innerText = reasons[Math.floor(Math.random()*reasons.length)];
+            }, 2500);
+        }
+
+        function showPopup(id) {
+            const p = document.getElementById(id);
+            p.style.display = 'block';
+        }
+        function closeP(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        window.onload = () => {
+            initScan();
+            addLog("Awaiting terrestrial identification...");
         };
-
-        // --- GAME ENGINE (FIXED GREEN DOT) ---
-        const Game = {
-            hits: 0,
-            target: document.getElementById('reaction-target'),
-            arena: document.getElementById('game-arena'),
-
-            start() {
-                document.getElementById('game-overlay').classList.add('hidden');
-                this.spawn();
-            },
-
-            spawn() {
-                // Ensure target is visible and reset
-                this.target.style.display = 'block';
-                
-                // Calculate bounds inside arena
-                const maxX = this.arena.clientWidth - 70;
-                const maxY = this.arena.clientHeight - 70;
-
-                const randomX = Math.floor(Math.random() * maxX);
-                const randomY = Math.floor(Math.random() * maxY);
-
-                this.target.style.left = randomX + 'px';
-                this.target.style.top = randomY + 'px';
-
-                // Add event listener once
-                this.target.onclick = () => this.handleHit();
-                
-                System.log(`Target spawned at vector [${randomX}, ${randomY}]`);
-            },
-
-            handleHit() {
-                this.hits++;
-                document.getElementById('hit-count').innerText = `${this.hits}/5`;
-                System.log(`Neural link synchronized: ${this.hits}`);
-                
-                if(this.hits >= 5) {
-                    this.target.style.display = 'none';
-                    System.log("Motor functions verified.");
-                    setTimeout(() => System.next(2), 500);
-                } else {
-                    this.spawn();
-                }
-            }
-        };
-
-        // Initialize on load
-        window.onload = () => System.init();
 
     </script>
 </body>
